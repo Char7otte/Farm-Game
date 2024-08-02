@@ -1,5 +1,7 @@
 import math
 
+player_position = [2, 2]
+
 game_vars = {
     'day': 1,
     'energy': 10,
@@ -148,7 +150,7 @@ def in_shop(game_vars):
                 input("Invalid choice. Please try again.")   
                 continue
 
-def draw_farm(farm_data, farm_size, player_position):
+def draw_farm(farm_data, farm_size, player_position = [2, 2]):
     rows = farm_size[0]
     columns = farm_size[1]
 
@@ -190,8 +192,53 @@ def draw_farm(farm_data, farm_size, player_position):
         print()
     print("+" + "-----+" * 5)
 
+def move_player(player_position, movement):
+    player_row, player_column = player_position
+    row_move, column_move = movement
+    player_row += row_move
+    player_column += column_move
+
+    if player_row < 0 or player_row > 4 or player_column < 0 or player_column > 4:
+        input("You can't go that way.")
+        return
+    return [player_row, player_column]
+
 def in_farm(game_vars, farm_data):
-    draw_farm(farm_data, (5,5), (2,2))
+    global player_position
+    while True:
+        draw_farm(farm_data, (5,5), player_position)
+
+        print(f"Energy: {game_vars["energy"]}")
+        print("[WASD] Move")
+        print("R)eturn to Town")
+        choice = input("Your choice? ").lower()
+
+        match choice:
+            case "w":
+                movement = [-1, 0]
+                decision = move_player(player_position, movement)
+            case "a":
+                movement = [0, -1]
+                decision = move_player(player_position, movement)
+            case "s":
+                movement = [1, 0]
+                decision = move_player(player_position, movement)
+            case "d":
+                movement = [0, 1]
+                decision = move_player(player_position, movement)
+            case "r":
+                in_town(game_vars)
+            case _:
+                # Notify the player of invalid input and waits for acknowledgement
+                input("Invalid choice. Please try again.")
+                continue
+        
+        print(player_position)
+
+        if decision == None:
+            continue
+        else:
+            player_position = decision
 
 def show_stats(game_vars):
     print_border_line(format_length, "+", "-")
