@@ -201,7 +201,7 @@ def move_player(player_position, movement):
     return [player_row, player_column]
 
 def in_farm(game_vars, farm_data):
-    global player_position
+    global player_position  #I don't know why, but I have to specifically declare it as a global in this one instance for this one variable.
     while True:
         draw_farm(farm_data, (5,5), player_position)
 
