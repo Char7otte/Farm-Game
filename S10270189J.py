@@ -242,7 +242,7 @@ def show_stats(game_vars):
     else:
         print_formatted_line("Your seeds:", 50, "|")
         for seed in game_vars["bag"]:
-            print_formatted_line(f"    {seed}: {game_vars['bag'][seed]}", 50, "|")
+            print_formatted_line(f"    {seed + ":":<13} {game_vars["bag"][seed]:<5}", 50, "|")
 
     print_border_line(50, "+", "-")
 
@@ -252,8 +252,7 @@ def end_day(game_vars):
 def save_game(game_vars, farm_data):
     with open ("save_game.txt", "w") as save_file:
         for key in game_vars:
-            save_file.write(str(game_vars[key]) + "\n")
-            print(key, game_vars[key])
+            save_file.write(f"{game_vars[key]}\n")
 
 def load_game(game_vars):
     try: 
@@ -263,9 +262,20 @@ def load_game(game_vars):
         return
     
     with open ("save_game.txt", "r") as save_file:
-        for key in game_vars:
-            game_vars[key] = save_file.readline()
-            print(key, game_vars[key])
+        game_vars["day"] = save_file.readline().strip()
+        game_vars["energy"] = save_file.readline().strip()
+        game_vars["money"] = save_file.readline().strip()
+        bag = save_file.readline().strip().split(",")
+        x = 0
+        for element in bag:     #Fixes the formatting of the bag data to dict
+            fixed_element = element.replace("{", "").replace("}", "").replace("'", "").replace(" ", "")
+            bag[x] = fixed_element.split(":")
+            x += 1
+        
+        for element in bag:     #Converts the bag data to a dictionary
+            name = element[0]
+            quantity = element[1]
+            game_vars["bag"][name] = quantity
         
         in_town(game_vars)
 
