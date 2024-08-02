@@ -155,7 +155,7 @@ def draw_farm(farm_data, farm_size, player_position):
     for row in range(rows):
         print("+" + "-----+" * 5)
 
-        #region tile's first row
+        #region info row
         print(border_char, end="")
         for column in range(columns):
             tile_data = farm_data[row][column]
@@ -166,7 +166,7 @@ def draw_farm(farm_data, farm_size, player_position):
         print()
         #endregion
 
-        #region tile's second row
+        #region player row
         print(border_char, end="")
         for column in range(columns):
             if (row + 1, column + 1) == player_position:
@@ -178,7 +178,7 @@ def draw_farm(farm_data, farm_size, player_position):
         print()
         #endregion
 
-        #region tile's third row
+        #region quantity row
         print(border_char, end="")
         for column in range(columns):
             if tile_data == None:
