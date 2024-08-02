@@ -38,8 +38,6 @@ farm_data = [
     [None, None, None, None, None] ]
 
 #region format functions for the game's menus
-format_length = 50  #default value
-border_char = "|"   #default value
 def print_border_line(length, border_char, fill_char):
     print(border_char + fill_char * (length - 2) + border_char)
     return
@@ -158,35 +156,35 @@ def draw_farm(farm_data, farm_size, player_position = [2, 2]):
         print("+" + "-----+" * 5)
 
         #region info row
-        print(border_char, end="")
+        print("|", end="")
         for column in range(columns):
             tile_data = farm_data[row][column]
             if tile_data == None:
                 tile_data = " " * 5
             print(f"{tile_data:^5}", end="")
-            print(border_char, end="")
+            print("|", end="")
         print()
         #endregion
 
         #region player row
-        print(border_char, end="")
+        print("|", end="")
         for column in range(columns):
             if [row, column] == player_position:
                 tile_data = "X"
             else:
                 tile_data = " " * 5
             print(f"{tile_data:^5}", end="")
-            print(border_char, end="")
+            print("|", end="")
         print()
         #endregion
 
         #region quantity row
-        print(border_char, end="")
+        print("|", end="")
         for column in range(columns):
             if tile_data == None:
                 tile_data = " " * 5
             print(f"{tile_data:^5}", end="")
-            print(border_char, end="")
+            print("|", end="")
         #endregion
 
         print()
@@ -237,19 +235,19 @@ def in_farm(game_vars, farm_data):
             player_position = decision
 
 def show_stats(game_vars):
-    print_border_line(format_length, "+", "-")
+    print_border_line(50, "+", "-")
 
     line = (f"Day {game_vars['day']} Energy: {game_vars['energy']} Money: ${game_vars['money']}")
-    print_formatted_line(line, format_length, border_char)
+    print_formatted_line(line, 50, "|")
 
     if not game_vars["bag"]:
-        print_formatted_line("You have no seeds.", format_length, border_char)
+        print_formatted_line("You have no seeds.", 50, "|")
     else:
-        print_formatted_line("Your seeds:", format_length, border_char)
+        print_formatted_line("Your seeds:", 50, "|")
         for seed in game_vars["bag"]:
-            print_formatted_line(f"    {seed}: {game_vars['bag'][seed]}", format_length, border_char)
+            print_formatted_line(f"    {seed}: {game_vars['bag'][seed]}", 50, "|")
 
-    print_border_line(format_length, "+", "-")
+    print_border_line(50, "+", "-")
 
 def end_day(game_vars):
     pass
@@ -275,14 +273,14 @@ def load_game(game_vars):
         in_town(game_vars)
 
 while True:
-    print_border_line(format_length, "-", "-")
+    print_border_line(50, "-", "-")
     print("Welcome to Sundrop Farm!")
     print()
     print("You took out a loan to buy a small farm in Albatross Town.")
     print("You have 30 days to pay off your debt of $100.")
     print("You might even be able to make a little profit.")
     print("How successful will you be?")
-    print_border_line(format_length, "-", "-")
+    print_border_line(50, "-", "-")
 
     print("1) Start a new game")
     print("2) Load your saved game")
