@@ -275,6 +275,8 @@ def load_game(game_vars):
         for key in game_vars:
             game_vars[key] = save_file.readline()
             print(key, game_vars[key])
+        
+        in_town(game_vars)
 
 while True:
     print_border_line(format_length, "-", "-")
@@ -298,7 +300,6 @@ while True:
             in_town(game_vars)
 
         case "2":
-            in_town(game_vars)
             load_game(game_vars)
 
         case "0":
