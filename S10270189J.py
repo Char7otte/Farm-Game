@@ -264,7 +264,7 @@ def save_game(game_vars, farm_data):
             save_file.write(str(game_vars[key]) + "\n")
             print(key, game_vars[key])
 
-def load_game(game_vars, farm_data):
+def load_game(game_vars):
     try: 
         save_file = open("save_game.txt", "r")
     except FileNotFoundError:
@@ -298,8 +298,8 @@ while True:
             in_town(game_vars)
 
         case "2":
-            load_game(game_vars, farm_data)
             in_town(game_vars)
+            load_game(game_vars)
 
         case "0":
             exit()
