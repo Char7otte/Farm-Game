@@ -262,9 +262,9 @@ def load_game(game_vars):
         return
     
     with open ("save_game.txt", "r") as save_file:
-        game_vars["day"] = save_file.readline().strip()
-        game_vars["energy"] = save_file.readline().strip()
-        game_vars["money"] = save_file.readline().strip()
+        game_vars["day"] = int(save_file.readline().strip())
+        game_vars["energy"] = int(save_file.readline().strip())
+        game_vars["money"] = int(save_file.readline().strip())
         bag = save_file.readline().strip().split(",")
         x = 0
         for element in bag:     #Fixes the formatting of the bag data to dict
@@ -274,7 +274,7 @@ def load_game(game_vars):
         
         for element in bag:     #Converts the bag data to a dictionary
             name = element[0]
-            quantity = element[1]
+            quantity = int(element[1])
             game_vars["bag"][name] = quantity
         
         in_town(game_vars)
