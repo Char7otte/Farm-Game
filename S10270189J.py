@@ -242,7 +242,7 @@ def show_stats(game_vars):
     else:
         print_formatted_line("Your seeds:", 50, "|")
         for seed in game_vars["bag"]:
-            print_formatted_line(f"    {seed}: {game_vars['bag'][seed]}", 50, "|")
+            print_formatted_line(f"    {seed + ":":<13} {game_vars["bag"][seed]:<5}", 50, "|")
 
     print_border_line(50, "+", "-")
 
