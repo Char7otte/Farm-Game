@@ -97,7 +97,6 @@ def buy_seeds(game_vars, seed):
     if money >= total_cost:
         print(f"You bought {buy_quantity} {seed_name} seeds.")
         game_vars["money"] -= total_cost
-        print(game_vars["bag"].items())
         if seed_name in game_vars["bag"]:
             game_vars["bag"][seed_name] += buy_quantity
         else:
@@ -226,8 +225,6 @@ def in_farm(game_vars, farm_data):
                 # Notify the player of invalid input and waits for acknowledgement
                 input("Invalid choice. Please try again.")
                 continue
-        
-        print(player_position)
 
         if decision == None:
             continue
