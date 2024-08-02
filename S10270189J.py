@@ -1,5 +1,7 @@
 import math
 
+player_position = [2, 2]
+
 game_vars = {
     'day': 1,
     'energy': 10,
@@ -148,49 +150,95 @@ def in_shop(game_vars):
                 input("Invalid choice. Please try again.")   
                 continue
 
-#region draw farm functions
-def draw_plant_tile(tile_data):
-    if tile_data == None:
-        tile_data = " " * 5
-    print(f"{tile_data:^5}", end="")
-    print(border_char, end="")
+def draw_farm(farm_data, farm_size, player_position = [2, 2]):
+    rows = farm_size[0]
+    columns = farm_size[1]
 
-def draw_player_tile(tile_data):
-    if tile_data == None:
-        tile_data = " " * 5
-
-def draw_quantity_tile(tile_data):
-    if tile_data == None:
-        tile_data = " " * 5
-
-def draw_farm(farm_data, rows, columns):
     for row in range(rows):
-        tile_data = ""
-
         print("+" + "-----+" * 5)
-        print(border_char, end="")
 
+        #region info row
+        print(border_char, end="")
         for column in range(columns):
-            tile_data = farm_data[row][column]  #tile_data set here now that column is known
-            draw_plant_tile(tile_data)
+            tile_data = farm_data[row][column]
+            if tile_data == None:
+                tile_data = " " * 5
+            print(f"{tile_data:^5}", end="")
+            print(border_char, end="")
         print()
+        #endregion
 
+        #region player row
         print(border_char, end="")
         for column in range(columns):
-            draw_player_tile(tile_data)
+            if [row, column] == player_position:
+                tile_data = "X"
+            else:
+                tile_data = " " * 5
+            print(f"{tile_data:^5}", end="")
+            print(border_char, end="")
         print()
+        #endregion
 
+        #region quantity row
         print(border_char, end="")
         for column in range(columns):
-            print("     " + border_char, end="")
+            if tile_data == None:
+                tile_data = " " * 5
+            print(f"{tile_data:^5}", end="")
+            print(border_char, end="")
+        #endregion
 
         print()
     print("+" + "-----+" * 5)
-#endregion
+
+def move_player(player_position, movement):
+    player_row, player_column = player_position
+    row_move, column_move = movement
+    player_row += row_move
+    player_column += column_move
+
+    if player_row < 0 or player_row > 4 or player_column < 0 or player_column > 4:
+        input("You can't go that way.")
+        return
+    return [player_row, player_column]
 
 def in_farm(game_vars, farm_data):
+    global player_position
+    while True:
+        draw_farm(farm_data, (5,5), player_position)
 
-    draw_farm(farm_data, 5, 5)
+        print(f"Energy: {game_vars["energy"]}")
+        print("[WASD] Move")
+        print("R)eturn to Town")
+        choice = input("Your choice? ").lower()
+
+        match choice:
+            case "w":
+                movement = [-1, 0]
+                decision = move_player(player_position, movement)
+            case "a":
+                movement = [0, -1]
+                decision = move_player(player_position, movement)
+            case "s":
+                movement = [1, 0]
+                decision = move_player(player_position, movement)
+            case "d":
+                movement = [0, 1]
+                decision = move_player(player_position, movement)
+            case "r":
+                in_town(game_vars)
+            case _:
+                # Notify the player of invalid input and waits for acknowledgement
+                input("Invalid choice. Please try again.")
+                continue
+        
+        print(player_position)
+
+        if decision == None:
+            continue
+        else:
+            player_position = decision
 
 def show_stats(game_vars):
     print_border_line(format_length, "+", "-")
@@ -216,7 +264,7 @@ def save_game(game_vars, farm_data):
             save_file.write(str(game_vars[key]) + "\n")
             print(key, game_vars[key])
 
-def load_game(game_vars, farm_data):
+def load_game(game_vars):
     try: 
         save_file = open("save_game.txt", "r")
     except FileNotFoundError:
@@ -227,6 +275,8 @@ def load_game(game_vars, farm_data):
         for key in game_vars:
             game_vars[key] = save_file.readline()
             print(key, game_vars[key])
+        
+        in_town(game_vars)
 
 while True:
     print_border_line(format_length, "-", "-")
@@ -250,8 +300,7 @@ while True:
             in_town(game_vars)
 
         case "2":
-            load_game(game_vars, farm_data)
-            in_town(game_vars)
+            load_game(game_vars)
 
         case "0":
             exit()
