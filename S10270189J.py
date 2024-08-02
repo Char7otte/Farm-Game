@@ -215,17 +215,13 @@ def in_farm(game_vars, farm_data):
 
         match choice:
             case "w":
-                movement = [-1, 0]
-                decision = move_player(player_position, movement)
+                decision = move_player(player_position, [-1, 0])
             case "a":
-                movement = [0, -1]
-                decision = move_player(player_position, movement)
+                decision = move_player(player_position, [0, -1])
             case "s":
-                movement = [1, 0]
-                decision = move_player(player_position, movement)
+                decision = move_player(player_position, [1, 0])
             case "d":
-                movement = [0, 1]
-                decision = move_player(player_position, movement)
+                decision = move_player(player_position, [0, 1])
             case "r":
                 in_town(game_vars)
             case _:
