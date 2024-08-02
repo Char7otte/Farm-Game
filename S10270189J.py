@@ -253,7 +253,6 @@ def save_game(game_vars, farm_data):
     with open ("save_game.txt", "w") as save_file:
         for key in game_vars:
             save_file.write(str(game_vars[key]) + "\n")
-            print(key, game_vars[key])
 
 def load_game(game_vars):
     try: 
