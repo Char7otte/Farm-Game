@@ -148,54 +148,50 @@ def in_shop(game_vars):
                 input("Invalid choice. Please try again.")   
                 continue
 
-#region draw farm functions
-def draw_plant_tile(tile_data):
-    if tile_data == None:
-        tile_data = " " * 5
-    print(f"{tile_data:^5}", end="")
-    print(border_char, end="")
-
-def draw_player_tile(tile_data):
-    if tile_data == None:
-        tile_data = " " * 5
-    print(f"{tile_data:^5}", end="")
-    print(border_char, end="")
-
-def draw_quantity_tile(tile_data):
-    if tile_data == None:
-        tile_data = " " * 5
-    print(f"{tile_data:^5}", end="")
-    print(border_char, end="")
-
 def draw_farm(farm_data, farm_size, player_position):
     rows = farm_size[0]
     columns = farm_size[1]
-    
-    for row in range(rows):
-        tile_data = ""
 
+    for row in range(rows):
         print("+" + "-----+" * 5)
 
+        #region tile's first row
         print(border_char, end="")
         for column in range(columns):
-            tile_data = farm_data[row][column]  #tile_data set here now that column is known
-            draw_plant_tile(tile_data)
+            tile_data = farm_data[row][column]
+            if tile_data == None:
+                tile_data = " " * 5
+            print(f"{tile_data:^5}", end="")
+            print(border_char, end="")
         print()
+        #endregion
 
+        #region tile's second row
         print(border_char, end="")
         for column in range(columns):
-            draw_player_tile(tile_data)
+            if (row + 1, column + 1) == player_position:
+                tile_data = "X"
+            else:
+                tile_data = " " * 5
+            print(f"{tile_data:^5}", end="")
+            print(border_char, end="")
         print()
+        #endregion
 
+        #region tile's third row
         print(border_char, end="")
         for column in range(columns):
-            print("     " + border_char, end="")
+            if tile_data == None:
+                tile_data = " " * 5
+            print(f"{tile_data:^5}", end="")
+            print(border_char, end="")
+        #endregion
 
         print()
     print("+" + "-----+" * 5)
-#endregion
 
 def in_farm(game_vars, farm_data):
+    draw_farm(farm_data, (5,5), (2,2))
 
 def show_stats(game_vars):
     print_border_line(format_length, "+", "-")
