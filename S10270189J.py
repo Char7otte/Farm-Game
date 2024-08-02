@@ -172,8 +172,8 @@ def draw_farm(farm_data, rows, columns):
         tile_data = ""
 
         print("+" + "-----+" * 5)
-        print(border_char, end="")
 
+        print(border_char, end="")
         for column in range(columns):
             tile_data = farm_data[row][column]  #tile_data set here now that column is known
             draw_plant_tile(tile_data)
