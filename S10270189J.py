@@ -169,7 +169,7 @@ def draw_farm(farm_data, farm_size, player_position):
         #region player row
         print(border_char, end="")
         for column in range(columns):
-            if (row + 1, column + 1) == player_position:
+            if [row, column] == player_position:
                 tile_data = "X"
             else:
                 tile_data = " " * 5
