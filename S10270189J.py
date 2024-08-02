@@ -167,7 +167,10 @@ def draw_quantity_tile(tile_data):
     print(f"{tile_data:^5}", end="")
     print(border_char, end="")
 
-def draw_farm(farm_data, rows, columns):
+def draw_farm(farm_data, farm_size, player_position):
+    rows = farm_size[0]
+    columns = farm_size[1]
+    
     for row in range(rows):
         tile_data = ""
 
@@ -193,8 +196,6 @@ def draw_farm(farm_data, rows, columns):
 #endregion
 
 def in_farm(game_vars, farm_data):
-
-    draw_farm(farm_data, 5, 5)
 
 def show_stats(game_vars):
     print_border_line(format_length, "+", "-")
