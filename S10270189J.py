@@ -158,10 +158,14 @@ def draw_plant_tile(tile_data):
 def draw_player_tile(tile_data):
     if tile_data == None:
         tile_data = " " * 5
+    print(f"{tile_data:^5}", end="")
+    print(border_char, end="")
 
 def draw_quantity_tile(tile_data):
     if tile_data == None:
         tile_data = " " * 5
+    print(f"{tile_data:^5}", end="")
+    print(border_char, end="")
 
 def draw_farm(farm_data, rows, columns):
     for row in range(rows):
