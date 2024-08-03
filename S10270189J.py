@@ -393,11 +393,9 @@ def load_save_data(variables, farm_data):
 
         variables["money"] = int(save_file.readline().strip())
 
-        position = save_file.readline().strip().split(",")
-        variables["position"] = reformat_position(position)
+        variables["position"] = reformat_position(save_file.readline().strip())
 
-        seed_bag = save_file.readline().strip().split(",")
-        variables["seed_bag"] = reformat_seed_bag(seed_bag)
+        variables["seed_bag"] = reformat_seed_bag(save_file.readline().strip())
 
 
         return 1   #Returns something so that decision won't be None
