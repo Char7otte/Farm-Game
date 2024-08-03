@@ -347,6 +347,8 @@ def in_farm(variables, farm_data, seed_data):
             input("You can't harvest the house.")
             in_farm(variables, farm_data, seed_data)
         else:
+            if use_energy(variables) == False:
+                in_farm(variables, farm_data, seed_data)
             for seed_name, remaining_growth_time in current_tile.items():
                 if not remaining_growth_time == 0:
                     input("This crop is not ready to harvest.")
@@ -360,7 +362,6 @@ def in_farm(variables, farm_data, seed_data):
                         print(f"You harvests the {seed} and sold it for ${crop_price}!")
                         input(f"You now have ${variables["money"]}!")
                         in_farm(variables, farm_data, seed_data)
-            
     elif choice == "R":
         in_town(variables, farm_data, seed_data)
     else:
