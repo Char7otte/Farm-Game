@@ -12,7 +12,7 @@ player_variables = {
 farm_layout = [ 
     [None, None, None, None, None],
     [None, None, None, None, None],
-    [None, None, 'HSE', None, None],
+    [None, None, ["HSE", None], None, None],
     [None, None, None, None, None],
     [None, None, None, None, None] ]
 
