@@ -223,6 +223,15 @@ def in_farm(game_vars, farm_data):
                 decision = move_player(player_position, [1, 0])
             case "d":
                 decision = move_player(player_position, [0, 1])
+            case "p":
+                if not farm_data[player_position[0]][player_position[1]] == None:
+                    input("You can't plant seeds here.")
+                else:
+                    if not game_vars["bag"]:
+                        input("You have no seeds.")
+                    else:
+                        plant_seed(game_vars["bag"])
+
             case "r":
                 in_town(game_vars)
             case _:
