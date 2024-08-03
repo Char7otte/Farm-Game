@@ -395,6 +395,19 @@ def show_stats(variables):
 
 def end_day(variables, farm_data, seed_data):
     variables["day"] += 1
+
+    if variables["day"] > 20:
+        money = variables["money"]
+        print(f"You have ${money} after 20 days.")
+        if money >= 100:
+            print(f"You have paid off your debt of $100 and made a profit of ${money - 100}")
+            input("You win!")
+        else:
+            print("You are unable to pay off your $100 debt and go bankrupt.")
+            print("You are now homeless.")
+            input("Game over.")
+        exit_game()
+
     variables["energy"] = 10
     variables["position"] = [2, 2]
 
