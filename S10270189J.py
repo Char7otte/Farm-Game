@@ -329,6 +329,8 @@ def in_farm(variables, farm_data, seed_data):
                 input("You have no seeds.")
                 in_farm(variables, farm_data, seed_data)
             else:
+                if use_energy(variables) == False:
+                    in_farm(variables, farm_data, seed_data)
                 plant_seed(variables, farm_data, seed_data)
     elif choice == "R":
         in_town(variables, farm_data, seed_data)
