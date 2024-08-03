@@ -162,16 +162,13 @@ def in_shop(variables, farm_data, seed_data):
         in_town(variables, farm_data, seed_data)
     elif choice == "1":
         buy_seeds(variables, seed_data["Lettuce"])
-        in_shop(variables, farm_data, seed_data)
     elif choice == "2":
         buy_seeds(variables, seed_data["Potato"])
-        in_shop(variables, farm_data, seed_data)
     elif choice == "3":
         buy_seeds(variables, seed_data["Cauliflower"])
-        in_shop(variables, farm_data, seed_data)
     else:
         throw_error()
-        in_shop(variables, farm_data, seed_data)
+    in_shop(variables, farm_data, seed_data)
 #endregion
 
 
