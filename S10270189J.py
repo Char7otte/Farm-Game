@@ -360,23 +360,20 @@ def save_game(variables, farm_data):
 def reformat_position(position):
     fixed_position = []
     x = 0
-    for element in position:
-        element = element.replace("[", "").replace("]", "").replace(" ", "")
-        fixed_position.append(int(element))
-        x += 1
-    return fixed_position
+    fixed_position = position.replace("[", "").replace("]", "").replace(" ", "").split(",")
+    return int(fixed_position[0]), int(fixed_position[1])
 
 def reformat_seed_bag(seed_bag):
     bag = {}
     x = 0
-    for element in seed_bag:    #Fixes the formatting of the seed bag data to dict
-        fixed_element = element.replace("{", "").replace("}", "").replace("'", "").replace(" ", "")
-        seed_bag[x] = fixed_element.split(":")
-        x += 1
-    for element in seed_bag:     #Converts the bag data to a dictionary
+    fixed_seed_bag = seed_bag.replace("{", "").replace("}", "").replace("'", "").replace(" ", "").split(",")
+
+    for element in fixed_seed_bag:
+        element = element.split(":")
         name = element[0]
         quantity = int(element[1])
         bag[name] = quantity
+    
     return bag
 
 def load_save_data(variables, farm_data):
