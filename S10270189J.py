@@ -1,42 +1,44 @@
 import math
 
 #region game variables
-player_position = [2, 2]
-
-game_vars = {
-    'day': 1,
-    'energy': 10,
-    'money': 20,
-    'bag': {},
+player_variables = {
+    "day": 1,
+    "energy": 10,
+    "money": 20,
+    "position": [2, 2],
+    "seed_bag": {},
 }
 
-seed_list = ['LET', 'POT', 'CAU']
-seeds = {
-    'LET': {'name': 'Lettuce',
-            'price': 2,
-            'growth_time': 2,
-            'crop_price': 3
-            },
-
-    'POT': {'name': 'Potato',
-            'price': 3,
-            'growth_time': 3,
-            'crop_price': 6
-            },
-
-    'CAU': {'name': 'Cauliflower',
-            'price': 5,
-            'growth_time': 6,
-            'crop_price': 14
-            },
-}
-
-farm_data = [ 
+farm_layout = [ 
     [None, None, None, None, None],
     [None, None, None, None, None],
     [None, None, 'HSE', None, None],
     [None, None, None, None, None],
     [None, None, None, None, None] ]
+
+seed_list = {
+    "Lettuce": 
+        {"name": "Lettuce",
+        "id": "LET",
+        "price": 2,
+        "growth_time": 2,
+        "crop_price": 3
+        },
+    "Potato": 
+        {"name": "Potato",
+        "id": "POT",
+        "price": 3,
+        "growth_time": 3,
+        "crop_price": 6
+        },
+    "Cauliflower": 
+        {"name": "Cauliflower",
+        "id": "CAU",
+        "price": 5,
+        "growth_time": 6,
+        "crop_price": 14
+        },
+}
 #endregion
 
 #region format functions for the game's menus
