@@ -1,5 +1,6 @@
 import math
 
+#region game variables
 player_position = [2, 2]
 
 game_vars = {
@@ -36,6 +37,7 @@ farm_data = [
     [None, None, 'HSE', None, None],
     [None, None, None, None, None],
     [None, None, None, None, None] ]
+#endregion
 
 #region format functions for the game's menus
 def print_border_line(length, border_char, fill_char):
