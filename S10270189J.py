@@ -368,7 +368,7 @@ def reformat_seed_bag(seed_bag):
     x = 0
     fixed_seed_bag = seed_bag.replace("{", "").replace("}", "").replace("'", "").replace(" ", "").split(",")
 
-    try:
+    try:    #Try in case there are no seeds in the save file
         for element in fixed_seed_bag:
             element = element.split(":")
             name = element[0]
