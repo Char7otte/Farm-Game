@@ -12,7 +12,7 @@ player_variables = {
 farm_layout = [ 
     [None, None, None, None, None],
     [None, None, None, None, None],
-    [None, None, ["HSE", None], None, None],
+    [None, None, {"HSE": None}, None, None],
     [None, None, None, None, None],
     [None, None, None, None, None] ]
 
@@ -179,26 +179,28 @@ def draw_farm(farm_data, farm_size, player_position):
     for row in range(rows):
         print("+" + "-----+" * 5)
 
-        #region info row
+        #region name row
         print("|", end="")
         for column in range(columns):
             tile_data = farm_data[row][column]
+
             if tile_data == None:
-                tile_data = " " * 5
-            print(f"{tile_data[0]:^5}", end="")
-            print("|", end="")
+                print_string = " " * 5
+            else:
+                print_string = list(tile_data)[0]
+
+            print(f"{print_string:^5}|" , end="")
         print()
         #endregion
 
-        #region player row
+        #region position row
         print("|", end="")
         for column in range(columns):
             if [row, column] == player_position:
-                tile_data = "X"
+                print_string = "X"
             else:
-                tile_data = " " * 5
-            print(f"{tile_data:^5}", end="")
-            print("|", end="")
+                print_string = " " * 5
+            print(f"{print_string:^5}|", end="")
         print()
         #endregion
 
@@ -206,14 +208,19 @@ def draw_farm(farm_data, farm_size, player_position):
         print("|", end="")
         for column in range(columns):
             tile_data = farm_data[row][column]
-            if tile_data == None or tile_data[0] == "HSE":
-                tile_data = " " * 5
-            print(f"{tile_data[1]:^5}", end="")
-            print("|", end="")
+            try:
+                key = list(tile_data)[0]
+                quantity = tile_data[key]
+                print_string = quantity
+                print(f"{print_string:^5}|" , end="")
+            except:
+                print_string = " " * 5
+                print(f"{print_string:^5}|" , end="")
         #endregion
 
         print()
     print("+" + "-----+" * 5)
+
 
 def print_farm_menu(variables, farm_data):
     draw_farm(farm_data, (5,5), variables["position"])
@@ -225,6 +232,7 @@ def print_farm_menu(variables, farm_data):
     if farm_data[player_row][player_column] == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
         print("P)lant seed")
     print("R)eturn to Town")
+
 
 def move_player(variables, choice):
     if choice == "w":
@@ -243,6 +251,7 @@ def move_player(variables, choice):
         input("You can't go that way.")
     else:
         variables["position"] = [new_player_row, new_player_column]
+
 
 def print_planting_menu(variables, seed_data):
     plant_string_format = "{:15}{:^13}{:^13}{:^13}"
@@ -269,6 +278,7 @@ def print_planting_menu(variables, seed_data):
     print("0) Leave")
     print_border_line(50, "-", "-")
 
+
 def plant_seed(variables, farm_data, seed_data):
     print_planting_menu(variables, seed_data)
     
@@ -290,11 +300,9 @@ def plant_seed(variables, farm_data, seed_data):
     plant_remaining_growth_time = selected_seed_data["growth_time"]
     
     player_row, player_column = variables["position"]
-    farm_data[player_row][player_column] = [plant_id, plant_remaining_growth_time]    
+    farm_data[player_row][player_column] = {plant_id: plant_remaining_growth_time}
     variables["seed_bag"][selected_seed] -= 1
     in_farm(variables, farm_data, seed_data)
-    
-
 
 
 def in_farm(variables, farm_data, seed_data):
@@ -346,50 +354,84 @@ def end_day(variables):
     pass
 
 
-
 #region Save and Load functions
 def save_game(variables, farm_data):
     with open ("save_game.txt", "w") as save_file:
         for key in variables:
             save_file.write(f"{variables[key]}\n")
+        
+        for element in farm_data:
+            save_file.write(f"{element}\n")
+
+def reformat_position(position):
+    fixed_position = []
+    x = 0
+    fixed_position = position.replace("[", "").replace("]", "").replace(" ", "").split(",")
+    return [int(fixed_position[0]), int(fixed_position[1])]
 
 def reformat_seed_bag(seed_bag):
     bag = {}
     x = 0
-    for element in seed_bag:    #Fixes the formatting of the seed bag data to dict
-        fixed_element = element.replace("{", "").replace("}", "").replace("'", "").replace(" ", "")
-        seed_bag[x] = fixed_element.split(":")
-        x += 1
-    for element in seed_bag:     #Converts the bag data to a dictionary
-        name = element[0]
-        quantity = int(element[1])
-        bag[name] = quantity
+    fixed_seed_bag = seed_bag.replace("{", "").replace("}", "").replace("'", "").replace(" ", "").split(",")
+
+    try:    #Try in case there are no seeds in the save file
+        for element in fixed_seed_bag:
+            element = element.split(":")
+            name = element[0]
+            quantity = int(element[1])
+            bag[name] = quantity
+    except:
+        return None
+    
     return bag
 
 def load_save_data(variables, farm_data):
-    try: 
-        save_file = open("save_game.txt", "r")
+    try:
+        with open ("save_game.txt", "r") as save_file:
+
+            variables["day"] = int(save_file.readline().strip())
+
+            variables["energy"] = int(save_file.readline().strip())
+
+            variables["money"] = int(save_file.readline().strip())
+
+            variables["position"] = reformat_position(save_file.readline().strip())
+
+            variables["seed_bag"] = reformat_seed_bag(save_file.readline().strip())
+
+            farm = []
+            new_farm = []
+            for line in save_file:
+                line = line.replace("[", "").replace("]", "").replace(" ", "")
+                farm.append(line.strip())
+            for element in farm:
+                split_element = element.split(",")
+                new_farm.append(split_element)
+            x = 0
+            for row in new_farm:
+                y = 0
+                for column in row:
+                    if column == "None":
+                        new_farm[x][y] = None
+                    else:
+                        column = column.replace("{", "").replace("}", "").replace("'", "").replace(" ", "").split(":")
+                        try:
+                            quantity = int(column[1])
+                        except:
+                            quantity = None
+                        new_farm[x][y] = {column[0]: quantity}
+                    y += 1
+                x += 1  
+            farm_data = new_farm
     except FileNotFoundError:
         input("No save game found.")
         return 
+    except:
+        input("Save file is corrupt.")
+        return
+              
+    return farm_data
     
-    with open ("save_game.txt", "r") as save_file:
-        variables["day"] = int(save_file.readline().strip())
-
-        variables["energy"] = int(save_file.readline().strip())
-
-        variables["money"] = int(save_file.readline().strip())
-
-        position = save_file.readline().strip().split(",")
-        x = 0
-        for element in position:
-            element = element.replace("[", "").replace("]", "").replace(" ", "")
-            variables["position"][x] = int(element)
-            x += 1
-
-        seed_bag = save_file.readline().strip().split(",")
-        variables["seed_bag"] = reformat_seed_bag(seed_bag)
-        return 1   #Returns something so that decision won't be None
 #endregion
 
 
@@ -422,6 +464,8 @@ def main(variables, farm_data, seed_data):
         decision = load_save_data(variables, farm_data)
         if decision == None:
             main(variables, farm_data, seed_data)
+            
+        farm_data = decision
         in_town(variables, farm_data, seed_data)
     else:
         throw_error()
