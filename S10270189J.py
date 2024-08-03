@@ -239,6 +239,10 @@ def print_farm_menu(variables, farm_data):
     current_tile = farm_data[player_row][player_column]
     if current_tile == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
         print("P)lant seed")
+    elif current_tile != None:
+        for seed_name, remaining_growth_time in current_tile.items():
+            if remaining_growth_time == 0:
+                print("H)arvest")
     print("R)eturn to Town")
 
 
