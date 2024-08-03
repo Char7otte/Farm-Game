@@ -353,6 +353,9 @@ def save_game(variables, farm_data):
     with open ("save_game.txt", "w") as save_file:
         for key in variables:
             save_file.write(f"{variables[key]}\n")
+        
+        for element in farm_data:
+            save_file.write(f"{element}\n")
 
 def reformat_seed_bag(seed_bag):
     bag = {}
