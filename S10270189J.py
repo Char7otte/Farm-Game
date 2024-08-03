@@ -59,7 +59,7 @@ def print_border_line(length, border_char, fill_char):
     print(border_char + fill_char * (length - 2) + border_char)
     return
 
-def print_formatted_line(string, length, border_char):
+def print_container_line(string, length, border_char):
     print(border_char + " " + string + " " * (length - len(string) - 3) + border_char)
     return
 #endregion
@@ -380,15 +380,15 @@ def show_stats(variables):
     seed_bag = variables["seed_bag"]
 
     print_border_line(50, "+", "-")
-    print_formatted_line((f"Day: {day} Energy: {energy} Money: ${money}"), 50, "|")
+    print_container_line((f"Day: {day} Energy: {energy} Money: ${money}"), 50, "|")
 
     #region print seed bag
     if not seed_bag:
-        print_formatted_line("You have no seeds.", 50, "|")
+        print_container_line("You have no seeds.", 50, "|")
     else:
-        print_formatted_line("Your seeds:", 50, "|")
+        print_container_line("Your seeds:", 50, "|")
         for seed in seed_bag:
-            print_formatted_line(f"    {seed + ":":<13} {seed_bag[seed]:<5}", 50, "|")
+            print_container_line(f"    {seed + ":":<13} {seed_bag[seed]:<5}", 50, "|")
     #endregion
 
     print_border_line(50, "+", "-")
