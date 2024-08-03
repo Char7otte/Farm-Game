@@ -175,7 +175,7 @@ def in_shop(variables, farm_data, seed_data):
 
 def use_energy(variables):
     if variables["energy"] == 0:
-        input("You have no energy left.")
+        input("You're too tired. You should get back to town.")
         return False
     variables["energy"] -= 1
 
