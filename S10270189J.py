@@ -120,13 +120,13 @@ def in_shop(game_vars):
         for seed_key in seeds:
             x += 1
 
-            seed_value_dict = seeds[seed_key]
+            seed_info = seeds[seed_key]
 
-            name = seed_value_dict["name"]
+            name = seed_info["name"]
             name_display = f"{x}) {name}"
-            price = seed_value_dict["price"]
-            growth_time = seed_value_dict["growth_time"]
-            crop_price = seed_value_dict["crop_price"]
+            price = seed_info["price"]
+            growth_time = seed_info["growth_time"]
+            crop_price = seed_info["crop_price"]
 
             print(shop_string_format.format(name_display, price, growth_time, crop_price))
         
