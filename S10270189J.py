@@ -236,7 +236,8 @@ def print_farm_menu(variables, farm_data):
     print("[WASD] Move")
     player_row = variables["position"][0]
     player_column = variables["position"][1]
-    if farm_data[player_row][player_column] == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
+    current_tile = farm_data[player_row][player_column]
+    if current_tile == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
         print("P)lant seed")
     print("R)eturn to Town")
 
@@ -317,12 +318,13 @@ def plant_seed(variables, farm_data, seed_data):
 def in_farm(variables, farm_data, seed_data):
     print_farm_menu(variables, farm_data)
     choice = try_choice().upper()
+    current_tile = farm_data[variables["position"][0]][variables["position"][1]]
 
     if choice == "W" or choice == "S" or choice =="A" or choice == "D":
         move_player(variables, farm_data, seed_data, choice)
         in_farm(variables, farm_data, seed_data)
     elif choice == "P":
-        if not farm_data[variables["position"][0]][variables["position"][1]] == None:
+        if not current_tile == None:
             input("You can't plant seeds here.")
             in_farm(variables, farm_data, seed_data)
         else:
@@ -339,7 +341,6 @@ def in_farm(variables, farm_data, seed_data):
         throw_error()
         in_farm(variables, farm_data, seed_data)
 #endregion
-
 
 def show_stats(variables):
     day = variables["day"]
