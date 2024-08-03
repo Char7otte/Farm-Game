@@ -172,6 +172,12 @@ def in_shop(variables, farm_data, seed_data):
 
 #region Farm
 
+def use_energy(variables):
+    if variables["energy"] == 0:
+        input("You have no energy left.")
+        return False
+    variables["energy"] -= 1
+
 def draw_farm(farm_data, farm_size, player_position):
     rows = farm_size[0]
     columns = farm_size[1]
@@ -234,7 +240,7 @@ def print_farm_menu(variables, farm_data):
     print("R)eturn to Town")
 
 
-def move_player(variables, choice):
+def move_player(variables, farm_data, seed_data, choice):
     if choice == "W":
         movement = (-1, 0)
     elif choice == "S":
@@ -249,6 +255,8 @@ def move_player(variables, choice):
 
     if new_player_row < 0 or new_player_row > 4 or new_player_column < 0 or new_player_column > 4:
         input("You can't go that way.")
+    elif use_energy(variables) == False:
+        in_farm(variables, farm_data, seed_data)
     else:
         variables["position"] = [new_player_row, new_player_column]
 
