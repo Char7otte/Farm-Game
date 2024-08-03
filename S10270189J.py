@@ -209,6 +209,8 @@ def in_farm(game_vars, farm_data):
 
         print(f"Energy: {game_vars["energy"]}")
         print("[WASD] Move")
+        if farm_data[player_position[0]][player_position[1]] == None and game_vars["bag"]:
+            print("P)lant seed")
         print("R)eturn to Town")
         choice = input("Your choice? ").lower()
 
