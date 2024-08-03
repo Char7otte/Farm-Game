@@ -358,8 +358,8 @@ def save_game(variables, farm_data):
             save_file.write(f"{element}\n")
 
 def reformat_position(position):
-    x = 0
     fixed_position = []
+    x = 0
     for element in position:
         element = element.replace("[", "").replace("]", "").replace(" ", "")
         fixed_position.append(int(element))
