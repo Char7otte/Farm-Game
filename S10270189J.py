@@ -41,6 +41,17 @@ seed_list = {
 }
 #endregion
 
+def try_choice():
+    try:
+        choice = input("Your choice? ")
+    except:
+        throw_error()
+        return None
+    return choice
+
+def throw_error():
+    input("Invalid choice. Please try again.")
+
 #region format functions for the game's menus
 def print_border_line(length, border_char, fill_char):
     print(border_char + fill_char * (length - 2) + border_char)
@@ -51,107 +62,117 @@ def print_formatted_line(string, length, border_char):
     return
 #endregion
 
-def in_town(game_vars):
-    while True:
-        show_stats(game_vars)
 
-        print("You are in Albatross Town")
-        print_border_line(25, "-", "-")
-        print("1) Visit Shop")
-        print("2) Visit Farm")
-        print("3) End Day")
-        print()
-        print("9) Save Game")
-        print("0) Exit Game")
-        print_border_line(25, "-", "-")
+#region Town Menu
+def print_in_town_menu(variables):
+    show_stats(variables)
+    print("You are in Albatross Town")
+    print_border_line(25, "-", "-")
+    print("1) Visit Shop")
+    print("2) Visit Farm")
+    print("3) End Day")
+    print()
+    print("9) Save Game")
+    print("0) Exit Game")
+    print_border_line(25, "-", "-")
+
+def in_town(variables, farm_data, seed_data):
+    print_in_town_menu(variables)
+    try:
         choice = input("Your choice? ")
+    except:
+        throw_error()
+        in_town(variables, farm_data, seed_data)
 
-        match choice:
-            case "1":
-                in_shop(game_vars)
-                break
+    if choice == "0":
+        exit()
+    elif choice == "1":
+        print("Welcome to Pierce's Seed Shop!")
+        in_shop(variables, farm_data, seed_data)
+    elif choice == "2":
+        in_farm(variables, farm_data, seed_data)
+    elif choice == "3":
+        end_day(variables)
+    elif choice == "9":
+        save_game(variables, farm_data)
+        input("Game saved.")
+        in_town(variables, farm_data, seed_data)
+    else:
+        throw_error()
+        in_town(variables, farm_data, seed_data)
+#endregion
 
-            case "2":
-                in_farm(game_vars, farm_data)
-                break
 
-            case "3":
-                end_day(game_vars)
+#region Shop Menu
+def buy_seeds(variables, seed_info):
+    player_money = variables["money"]
+    seed_name = seed_info["name"]
+    seed_price = seed_info["price"]
 
-            case "9":
-                save_game(game_vars, farm_data)
-
-            case "0":
-                exit()
-
-            case _:
-                # Notify the player of invalid input and waits for acknowledgement
-                input("Invalid choice. Please try again.")   
-                continue
-
-def buy_seeds(game_vars, seed):
-    money = game_vars["money"]
-    seed_name = seed["name"]
-    seed_price = seed["price"]
-
-    print(f"You have ${money}")
+    print(f"You have ${player_money}")
     buy_quantity = int(input("How many do you wish to buy? "))
     total_cost = seed_price * buy_quantity
 
-    if money >= total_cost:
+    if player_money >= total_cost:
         print(f"You bought {buy_quantity} {seed_name} seeds.")
-        game_vars["money"] -= total_cost
-        if seed_name in game_vars["bag"]:
-            game_vars["bag"][seed_name] += buy_quantity
+        variables["money"] -= total_cost
+        if seed_name in variables["seed_bag"]:
+            variables["seed_bag"][seed_name] += buy_quantity
         else:
-            game_vars["bag"][seed_name] = buy_quantity
+            variables["seed_bag"][seed_name] = buy_quantity
     else:
         input("You can't afford that!")
-    
-def in_shop(game_vars):
+
+def print_shop_menu(variables, seed_data):
     shop_string_format = "{:<15}{:^9}{:^13}{:^13}"
-    print("Welcome to Pierce's Seed Shop!")
 
-    while True:
-        show_stats(game_vars)
-        print("What do you wish to buy?")
-        print(shop_string_format.format("Seed", "Price", "Days to Grow", "Crop Price"))
-        print_border_line(48, "-", "-")
+    show_stats(variables)
+    print("What do you wish to buy?")
+    print(shop_string_format.format("Seed", "Price", "Days to Grow", "Crop Price"))
+    print_border_line(48, "-", "-")
 
-        x = 0
-        for seed_key in seeds:
-            x += 1
+    x = 0
+    for seed in seed_data:
+        x += 1
 
-            seed_info = seeds[seed_key]
+        seed_info = seed_data[seed]
 
-            name = seed_info["name"]
-            name_display = f"{x}) {name}"
-            price = seed_info["price"]
-            growth_time = seed_info["growth_time"]
-            crop_price = seed_info["crop_price"]
+        name = seed_info["name"]
+        name_display = f"{x}) {name}"
+        price = seed_info["price"]
+        growth_time = seed_info["growth_time"]  
+        crop_price = seed_info["crop_price"]
 
-            print(shop_string_format.format(name_display, price, growth_time, crop_price))
-        
-        print()
-        print("0) Leave")
-        print_border_line(48, "-", "-")
-        choice = input("Your choice? ")
+        print(shop_string_format.format(name_display, price, growth_time, crop_price))
+    
+    print()
+    print("0) Leave")
+    print_border_line(48, "-", "-")
 
-        match choice:
-            case "1":
-                buy_seeds(game_vars, seeds["LET"])
-            case "2":
-                buy_seeds(game_vars, seeds["POT"])
-            case "3":
-                buy_seeds(game_vars, seeds["CAU"])
-            case "0":
-                in_town(game_vars)
-            case _:
-                # Notify the player of invalid input and waits for acknowledgement
-                input("Invalid choice. Please try again.")   
-                continue
+def in_shop(variables, farm_data, seed_data):
+    print_shop_menu(variables, seed_data)
+    choice = try_choice()
 
-def draw_farm(farm_data, farm_size, player_position = [2, 2]):
+    if choice == "0":
+        in_town(variables, farm_data, seed_data)
+    elif choice == "1":
+        buy_seeds(variables, seed_data["Lettuce"])
+        in_shop(variables, farm_data, seed_data)
+    elif choice == "2":
+        buy_seeds(variables, seed_data["Potato"])
+        in_shop(variables, farm_data, seed_data)
+    elif choice == "3":
+        buy_seeds(variables, seed_data["Cauliflower"])
+        in_shop(variables, farm_data, seed_data)
+    else:
+        throw_error()
+        in_shop(variables, farm_data, seed_data)
+#endregion
+
+
+#region Farm
+
+def draw_farm(farm_data, farm_size, player_position):
     rows = farm_size[0]
     columns = farm_size[1]
 
@@ -164,7 +185,7 @@ def draw_farm(farm_data, farm_size, player_position = [2, 2]):
             tile_data = farm_data[row][column]
             if tile_data == None:
                 tile_data = " " * 5
-            print(f"{tile_data:^5}", end="")
+            print(f"{tile_data[0]:^5}", end="")
             print("|", end="")
         print()
         #endregion
@@ -184,148 +205,196 @@ def draw_farm(farm_data, farm_size, player_position = [2, 2]):
         #region quantity row
         print("|", end="")
         for column in range(columns):
-            if tile_data == None:
+            tile_data = farm_data[row][column]
+            if tile_data == None or tile_data[0] == "HSE":
                 tile_data = " " * 5
-            print(f"{tile_data:^5}", end="")
+            print(f"{tile_data[1]:^5}", end="")
             print("|", end="")
         #endregion
 
         print()
     print("+" + "-----+" * 5)
 
-def move_player(player_position, movement):
-    player_row, player_column = player_position
-    row_move, column_move = movement
-    player_row += row_move
-    player_column += column_move
+def print_farm_menu(variables, farm_data):
+    draw_farm(farm_data, (5,5), variables["position"])
 
-    if player_row < 0 or player_row > 4 or player_column < 0 or player_column > 4:
+    print(f"Energy: {variables["energy"]}")
+    print("[WASD] Move")
+    player_row = variables["position"][0]
+    player_column = variables["position"][1]
+    if farm_data[player_row][player_column] == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
+        print("P)lant seed")
+    print("R)eturn to Town")
+
+def move_player(variables, choice):
+    if choice == "w":
+        movement = (-1, 0)
+    elif choice == "s":
+        movement = (1, 0)
+    elif choice == "a":
+        movement = (0, -1)
+    elif choice == "d":
+        movement = (0, 1)
+
+    player_row, player_column = variables["position"][0], variables["position"][1]
+    new_player_row, new_player_column = player_row + movement[0], player_column + movement[1]
+
+    if new_player_row < 0 or new_player_row > 4 or new_player_column < 0 or new_player_column > 4:
         input("You can't go that way.")
-        return
-    return [player_row, player_column]
+    else:
+        variables["position"] = [new_player_row, new_player_column]
 
-def plant_seed(bag):
+def print_planting_menu(variables, seed_data):
+    plant_string_format = "{:15}{:^13}{:^13}{:^13}"
+    seed_bag = variables["seed_bag"]
+
     print("What do you wish to plant?")
     print_border_line(50, "-", "-")
-    plant_string_format = "{:15}{:^13}{:^13}{:^13}"
     print(plant_string_format.format("    Seed", "Days to Grow", "Crop Price", "Available"))
     print_border_line(50, "-", "-")
+
     x = 0
-    for seed, quantity in bag.items():
+    for seed_name, quantity in seed_bag.items():
         x += 1
-        name_display = f"{x}) {seed}"
+        name_display = f"{x}) {seed_name}"
 
-        y = 0
-        for seed_key in seeds:
-            y += 1
+        seed_info = seed_data[seed_name]
 
-            seed_info = seeds[seed_key]
-            if seed_info["name"] == seed:
-
-                growth_time = seed_info["growth_time"]
-                crop_price = seed_info["crop_price"]
-    
-        
+        growth_time = seed_info["growth_time"]
+        crop_price = seed_info["crop_price"]
+      
         print(plant_string_format.format(name_display, growth_time, crop_price, quantity))
     
     print()
     print("0) Leave")
     print_border_line(50, "-", "-")
-    choice = input("Your choice? ")
 
-def in_farm(game_vars, farm_data):
-    global player_position  #I don't know why, but I have to specifically declare it as a global in this one instance for this one variable.
-    while True:
-        draw_farm(farm_data, (5,5), player_position)
+def plant_seed(variables, farm_data, seed_data):
+    print_planting_menu(variables, seed_data)
+    
+    choice = try_choice()
+    list_of_available_seeds = list(variables["seed_bag"].keys())
 
-        print(f"Energy: {game_vars["energy"]}")
-        print("[WASD] Move")
-        if farm_data[player_position[0]][player_position[1]] == None and game_vars["bag"]:
-            print("P)lant seed")
-        print("R)eturn to Town")
-        choice = input("Your choice? ").lower()
+    try:
+        choice = int(choice) - 1 #Subtract 1 to match the index of the seed bag
+    except IndexError:
+        input(f"You only have {len(list_of_available_seeds)} seeds to pick from.")
+        plant_seed(variables, farm_data, seed_data)
+    except:
+        throw_error()
+        plant_seed(variables, farm_data, seed_data)
 
-        decision = None
+    selected_seed = list_of_available_seeds[choice]
+    selected_seed_data = seed_data[selected_seed]
+    plant_id = selected_seed_data["id"]
+    plant_remaining_growth_time = selected_seed_data["growth_time"]
+    
+    player_row, player_column = variables["position"]
+    farm_data[player_row][player_column] = [plant_id, plant_remaining_growth_time]    
+    variables["seed_bag"][selected_seed] -= 1
+    in_farm(variables, farm_data, seed_data)
+    
 
-        match choice:
-            case "w":
-                decision = move_player(player_position, [-1, 0])
-            case "a":
-                decision = move_player(player_position, [0, -1])
-            case "s":
-                decision = move_player(player_position, [1, 0])
-            case "d":
-                decision = move_player(player_position, [0, 1])
-            case "p":
-                if not farm_data[player_position[0]][player_position[1]] == None:
-                    input("You can't plant seeds here.")
-                else:
-                    if not game_vars["bag"]:
-                        input("You have no seeds.")
-                    else:
-                        plant_seed(game_vars["bag"])
 
-            case "r":
-                in_town(game_vars)
-            case _:
-                # Notify the player of invalid input and waits for acknowledgement
-                input("Invalid choice. Please try again.")
-                continue
 
-        if decision == None:
-            continue
+def in_farm(variables, farm_data, seed_data):
+    print_farm_menu(variables, farm_data)
+    choice = try_choice().lower()
+
+    if choice == "w" or choice == "s" or choice =="a" or choice == "d":
+        move_player(variables, choice)
+        in_farm(variables, farm_data, seed_data)
+    elif choice == "p":
+        if not farm_data[variables["position"][0]][variables["position"][1]] == None:
+            input("You can't plant seeds here.")
+            in_farm(variables, farm_data, seed_data)
         else:
-            player_position = decision
+            if not variables["seed_bag"]:
+                input("You have no seeds.")
+                in_farm(variables, farm_data, seed_data)
+            else:
+                plant_seed(variables, farm_data, seed_data)
+    elif choice == "r":
+        in_town(variables, farm_data, seed_data)
+    else:
+        throw_error()
+        in_farm(variables, farm_data, seed_data)
+#endregion
 
-def show_stats(game_vars):
+
+def show_stats(variables):
+    day = variables["day"]
+    energy = variables["energy"]
+    money = variables["money"]
+    seed_bag = variables["seed_bag"]
+
     print_border_line(50, "+", "-")
+    print_formatted_line((f"Day {day} Energy: {energy} Money: ${money}"), 50, "|")
 
-    line = (f"Day {game_vars['day']} Energy: {game_vars['energy']} Money: ${game_vars['money']}")
-    print_formatted_line(line, 50, "|")
-
-    if not game_vars["bag"]:
+    #region print seed bag
+    if not seed_bag:
         print_formatted_line("You have no seeds.", 50, "|")
     else:
         print_formatted_line("Your seeds:", 50, "|")
-        for seed in game_vars["bag"]:
-            print_formatted_line(f"    {seed + ":":<13} {game_vars["bag"][seed]:<5}", 50, "|")
+        for seed in seed_bag:
+            print_formatted_line(f"    {seed + ":":<13} {seed_bag[seed]:<5}", 50, "|")
+    #endregion
 
     print_border_line(50, "+", "-")
 
-def end_day(game_vars):
+def end_day(variables):
     pass
 
-def save_game(game_vars, farm_data):
-    with open ("save_game.txt", "w") as save_file:
-        for key in game_vars:
-            save_file.write(f"{game_vars[key]}\n")
 
-def load_game(game_vars):
+
+#region Save and Load functions
+def save_game(variables, farm_data):
+    with open ("save_game.txt", "w") as save_file:
+        for key in variables:
+            save_file.write(f"{variables[key]}\n")
+
+def reformat_seed_bag(seed_bag):
+    bag = {}
+    x = 0
+    for element in seed_bag:    #Fixes the formatting of the seed bag data to dict
+        fixed_element = element.replace("{", "").replace("}", "").replace("'", "").replace(" ", "")
+        seed_bag[x] = fixed_element.split(":")
+        x += 1
+    for element in seed_bag:     #Converts the bag data to a dictionary
+        name = element[0]
+        quantity = int(element[1])
+        bag[name] = quantity
+    return bag
+
+def load_save_data(variables, farm_data):
     try: 
         save_file = open("save_game.txt", "r")
     except FileNotFoundError:
         input("No save game found.")
-        return
+        return 
     
     with open ("save_game.txt", "r") as save_file:
-        game_vars["day"] = int(save_file.readline().strip())
-        game_vars["energy"] = int(save_file.readline().strip())
-        game_vars["money"] = int(save_file.readline().strip())
-        bag = save_file.readline().strip().split(",")
-        x = 0
-        for element in bag:     #Fixes the formatting of the bag data to dict
-            fixed_element = element.replace("{", "").replace("}", "").replace("'", "").replace(" ", "")
-            bag[x] = fixed_element.split(":")
-            x += 1
-        
-        for element in bag:     #Converts the bag data to a dictionary
-            name = element[0]
-            quantity = int(element[1])
-            game_vars["bag"][name] = quantity
-        
-        in_town(game_vars)
+        variables["day"] = int(save_file.readline().strip())
 
-while True:
+        variables["energy"] = int(save_file.readline().strip())
+
+        variables["money"] = int(save_file.readline().strip())
+
+        position = save_file.readline().strip().split(",")
+        x = 0
+        for element in position:
+            element = element.replace("[", "").replace("]", "").replace(" ", "")
+            variables["position"][x] = int(element)
+            x += 1
+
+        seed_bag = save_file.readline().strip().split(",")
+        variables["seed_bag"] = reformat_seed_bag(seed_bag)
+        return 1   #Returns something so that decision won't be None
+#endregion
+
+
+#region Start Menu
+def print_start_menu():
     print_border_line(50, "-", "-")
     print("Welcome to Sundrop Farm!")
     print()
@@ -340,19 +409,24 @@ while True:
     print()
     print("0) Exit Game")
 
-    choice = input("Your choice? ")
 
-    match choice:
-        case "1":
-            in_town(game_vars)
+def main(variables, farm_data, seed_data):
+    print_start_menu()
+    choice = try_choice()
 
-        case "2":
-            load_game(game_vars)
+    if choice == "0":
+        exit()
+    elif choice == "1":
+        in_town(variables, farm_data, seed_data)
+    elif choice == "2":
+        decision = load_save_data(variables, farm_data)
+        if decision == None:
+            main(variables, farm_data, seed_data)
+        in_town(variables, farm_data, seed_data)
+    else:
+        throw_error()
+        main(variables, farm_data, seed_data)
+#endregion
 
-        case "0":
-            exit()
 
-        case _:
-            # Notify the player of invalid input and waits for acknowledgement
-            input("Invalid choice. Please try again.")   
-            continue
+main(player_variables, farm_layout, seed_list)
