@@ -217,7 +217,7 @@ def draw_farm(farm_data, farm_size, player_position):
                 print_string = " " * 5
                 print(f"{print_string:^5}|" , end="")
         #endregion
-        
+
         print()
     print("+" + "-----+" * 5)
 
@@ -300,7 +300,7 @@ def plant_seed(variables, farm_data, seed_data):
     plant_remaining_growth_time = selected_seed_data["growth_time"]
     
     player_row, player_column = variables["position"]
-    farm_data[player_row][player_column] = [plant_id, plant_remaining_growth_time]    
+    farm_data[player_row][player_column] = {plant_id: plant_remaining_growth_time}
     variables["seed_bag"][selected_seed] -= 1
     in_farm(variables, farm_data, seed_data)
 
@@ -398,15 +398,39 @@ def load_save_data(variables, farm_data):
             variables["position"] = reformat_position(save_file.readline().strip())
 
             variables["seed_bag"] = reformat_seed_bag(save_file.readline().strip())
-        except:
-            input("Save file corrupted.")
-            return None
 
-
-        return 1   #Returns something so that decision won't be None
+            farm = []
+            new_farm = []
+            for line in save_file:
+                line = line.replace("[", "").replace("]", "").replace(" ", "")
+                farm.append(line.strip())
+            for element in farm:
+                split_element = element.split(",")
+                new_farm.append(split_element)
+            x = 0
+            for row in new_farm:
+                y = 0
+                for column in row:
+                    if column == "None":
+                        new_farm[x][y] = None
+                    else:
+                        column = column.replace("{", "").replace("}", "").replace("'", "").replace(" ", "").split(":")
+                        try:
+                            quantity = int(column[1])
+                        except:
+                            quantity = None
+                        new_farm[x][y] = {column[0]: quantity}
+                    y += 1
+                x += 1  
+            farm_data = new_farm
     except FileNotFoundError:
         input("No save game found.")
         return 
+    except:
+        input("Save file is corrupt.")
+        return
+              
+    return farm_data
     
 #endregion
 
@@ -440,6 +464,8 @@ def main(variables, farm_data, seed_data):
         decision = load_save_data(variables, farm_data)
         if decision == None:
             main(variables, farm_data, seed_data)
+            
+        farm_data = decision
         in_town(variables, farm_data, seed_data)
     else:
         throw_error()
