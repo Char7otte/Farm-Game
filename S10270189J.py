@@ -361,7 +361,7 @@ def reformat_position(position):
     fixed_position = []
     x = 0
     fixed_position = position.replace("[", "").replace("]", "").replace(" ", "").split(",")
-    return int(fixed_position[0]), int(fixed_position[1])
+    return [int(fixed_position[0]), int(fixed_position[1])]
 
 def reformat_seed_bag(seed_bag):
     bag = {}
