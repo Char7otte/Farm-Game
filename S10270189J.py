@@ -202,6 +202,35 @@ def move_player(player_position, movement):
         return
     return [player_row, player_column]
 
+def plant_seed(bag):
+    print("What do you wish to plant?")
+    print_border_line(50, "-", "-")
+    plant_string_format = "{:15}{:^13}{:^13}{:^13}"
+    print(plant_string_format.format("    Seed", "Days to Grow", "Crop Price", "Available"))
+    print_border_line(50, "-", "-")
+    x = 0
+    for seed, quantity in bag.items():
+        x += 1
+        name_display = f"{x}) {seed}"
+
+        y = 0
+        for seed_key in seeds:
+            y += 1
+
+            seed_info = seeds[seed_key]
+            if seed_info["name"] == seed:
+
+                growth_time = seed_info["growth_time"]
+                crop_price = seed_info["crop_price"]
+    
+        
+        print(plant_string_format.format(name_display, growth_time, crop_price, quantity))
+    
+    print()
+    print("0) Leave")
+    print_border_line(50, "-", "-")
+    choice = input("Your choice? ")
+
 def in_farm(game_vars, farm_data):
     global player_position  #I don't know why, but I have to specifically declare it as a global in this one instance for this one variable.
     while True:
