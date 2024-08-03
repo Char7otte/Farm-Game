@@ -92,7 +92,7 @@ def in_town(variables, farm_data, seed_data):
     elif choice == "2":
         in_farm(variables, farm_data, seed_data)
     elif choice == "3":
-        end_day(variables)
+        end_day(variables, farm_data, seed_data)
     elif choice == "9":
         save_game(variables, farm_data)
         input("Game saved.")
@@ -360,8 +360,26 @@ def show_stats(variables):
 
     print_border_line(50, "+", "-")
 
-def end_day(variables):
-    pass
+def end_day(variables, farm_data, seed_data):
+    variables["day"] += 1
+    variables["energy"] = 10
+    variables["position"] = [2, 2]
+
+    x = 0
+    for row in farm_data:
+        y = 0
+        for column in row:
+            y += 1
+            if column == None:
+                continue
+            for seed_name, remaining_growth_time in column.items():  
+                if seed_name == "HSE":
+                    continue        
+                if remaining_growth_time > 0:
+                    print(x, y)
+                    farm_data[x][y - 1] = {seed_name: remaining_growth_time - 1}
+        x += 1
+    in_town(variables, farm_data, seed_data)
 
 
 #region Save and Load functions
