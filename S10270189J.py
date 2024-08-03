@@ -10,9 +10,9 @@ player_variables = {
 }
 
 farm_layout = [ 
+    [{"POT": 3}, None, None, None, None],
     [None, None, None, None, None],
-    [None, None, None, None, None],
-    [None, None, ["HSE", None], None, None],
+    [None, None, {"HSE": None}, None, None],
     [None, None, None, None, None],
     [None, None, None, None, None] ]
 
@@ -183,10 +183,13 @@ def draw_farm(farm_data, farm_size, player_position):
         print("|", end="")
         for column in range(columns):
             tile_data = farm_data[row][column]
+
             if tile_data == None:
-                tile_data = " " * 5
-            print(f"{tile_data[0]:^5}", end="")
-            print("|", end="")
+                print_string = " " * 5
+            else:
+                print_string = list(tile_data)[0]
+
+            print(f"{print_string:^5}|" , end="")
         print()
         #endregion
 
@@ -194,11 +197,10 @@ def draw_farm(farm_data, farm_size, player_position):
         print("|", end="")
         for column in range(columns):
             if [row, column] == player_position:
-                tile_data = "X"
+                print_string = "X"
             else:
-                tile_data = " " * 5
-            print(f"{tile_data:^5}", end="")
-            print("|", end="")
+                print_string = " " * 5
+            print(f"{print_string:^5}|", end="")
         print()
         #endregion
 
@@ -206,12 +208,16 @@ def draw_farm(farm_data, farm_size, player_position):
         print("|", end="")
         for column in range(columns):
             tile_data = farm_data[row][column]
-            if tile_data == None or tile_data[0] == "HSE":
-                tile_data = " " * 5
-            print(f"{tile_data[1]:^5}", end="")
-            print("|", end="")
+            try:
+                key = list(tile_data)[0]
+                quantity = tile_data[key]
+                print_string = quantity
+                print(f"{print_string:^5}|" , end="")
+            except:
+                print_string = " " * 5
+                print(f"{print_string:^5}|" , end="")
         #endregion
-
+        
         print()
     print("+" + "-----+" * 5)
 
