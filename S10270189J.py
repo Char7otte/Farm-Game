@@ -92,7 +92,7 @@ def in_town(variables, farm_data, seed_data):
     elif choice == "2":
         in_farm(variables, farm_data, seed_data)
     elif choice == "3":
-        end_day(variables)
+        end_day(variables, farm_data, seed_data)
     elif choice == "9":
         save_game(variables, farm_data)
         input("Game saved.")
@@ -172,6 +172,12 @@ def in_shop(variables, farm_data, seed_data):
 
 #region Farm
 
+def use_energy(variables):
+    if variables["energy"] == 0:
+        input("You have no energy left.")
+        return False
+    variables["energy"] -= 1
+
 def draw_farm(farm_data, farm_size, player_position):
     rows = farm_size[0]
     columns = farm_size[1]
@@ -234,14 +240,14 @@ def print_farm_menu(variables, farm_data):
     print("R)eturn to Town")
 
 
-def move_player(variables, choice):
-    if choice == "w":
+def move_player(variables, farm_data, seed_data, choice):
+    if choice == "W":
         movement = (-1, 0)
-    elif choice == "s":
+    elif choice == "S":
         movement = (1, 0)
-    elif choice == "a":
+    elif choice == "A":
         movement = (0, -1)
-    elif choice == "d":
+    elif choice == "D":
         movement = (0, 1)
 
     player_row, player_column = variables["position"][0], variables["position"][1]
@@ -249,6 +255,8 @@ def move_player(variables, choice):
 
     if new_player_row < 0 or new_player_row > 4 or new_player_column < 0 or new_player_column > 4:
         input("You can't go that way.")
+    elif use_energy(variables) == False:
+        in_farm(variables, farm_data, seed_data)
     else:
         variables["position"] = [new_player_row, new_player_column]
 
@@ -307,12 +315,12 @@ def plant_seed(variables, farm_data, seed_data):
 
 def in_farm(variables, farm_data, seed_data):
     print_farm_menu(variables, farm_data)
-    choice = try_choice().lower()
+    choice = try_choice().upper()
 
-    if choice == "w" or choice == "s" or choice =="a" or choice == "d":
-        move_player(variables, choice)
+    if choice == "W" or choice == "S" or choice =="A" or choice == "D":
+        move_player(variables, farm_data, seed_data, choice)
         in_farm(variables, farm_data, seed_data)
-    elif choice == "p":
+    elif choice == "P":
         if not farm_data[variables["position"][0]][variables["position"][1]] == None:
             input("You can't plant seeds here.")
             in_farm(variables, farm_data, seed_data)
@@ -321,8 +329,10 @@ def in_farm(variables, farm_data, seed_data):
                 input("You have no seeds.")
                 in_farm(variables, farm_data, seed_data)
             else:
+                if use_energy(variables) == False:
+                    in_farm(variables, farm_data, seed_data)
                 plant_seed(variables, farm_data, seed_data)
-    elif choice == "r":
+    elif choice == "R":
         in_town(variables, farm_data, seed_data)
     else:
         throw_error()
@@ -337,7 +347,7 @@ def show_stats(variables):
     seed_bag = variables["seed_bag"]
 
     print_border_line(50, "+", "-")
-    print_formatted_line((f"Day {day} Energy: {energy} Money: ${money}"), 50, "|")
+    print_formatted_line((f"Day: {day} Energy: {energy} Money: ${money}"), 50, "|")
 
     #region print seed bag
     if not seed_bag:
@@ -350,8 +360,26 @@ def show_stats(variables):
 
     print_border_line(50, "+", "-")
 
-def end_day(variables):
-    pass
+def end_day(variables, farm_data, seed_data):
+    variables["day"] += 1
+    variables["energy"] = 10
+    variables["position"] = [2, 2]
+
+    x = 0
+    for row in farm_data:
+        y = 0
+        for column in row:
+            y += 1
+            if column == None:
+                continue
+            for seed_name, remaining_growth_time in column.items():  
+                if seed_name == "HSE":
+                    continue        
+                if remaining_growth_time > 0:
+                    print(x, y)
+                    farm_data[x][y - 1] = {seed_name: remaining_growth_time - 1}
+        x += 1
+    in_town(variables, farm_data, seed_data)
 
 
 #region Save and Load functions
