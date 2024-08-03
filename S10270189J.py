@@ -1,6 +1,6 @@
 import math
 
-#region game variables
+#region Game variables
 player_variables = {
     "day": 1,
     "energy": 10,
@@ -9,14 +9,14 @@ player_variables = {
     "seed_bag": {},
 }
 
-farm_layout = [ 
+farm_layout = [  #5x5 farm layout, with the house at the center. Each element is a dict with the seed name: remaining growth time
     [None, None, None, None, None],
     [None, None, None, None, None],
-    [None, None, {"HSE": None}, None, None],
+    [None, None, {"HSE": None}, None, None], 
     [None, None, None, None, None],
     [None, None, None, None, None] ]
 
-seed_list = {
+seed_list = {   #id is the name abbreviated & what's shown on the farm.
     "Lettuce": 
         {"name": "Lettuce",
         "id": "LET",
@@ -41,6 +41,7 @@ seed_list = {
 }
 #endregion
 
+#region Input functions
 def try_choice():
     try:
         choice = input("Your choice? ")
@@ -51,8 +52,9 @@ def try_choice():
 
 def throw_error():
     input("Invalid choice. Please try again.")
+#endregion
 
-#region format functions for the game's menus
+#region Format functions for the game's menus
 def print_border_line(length, border_char, fill_char):
     print(border_char + fill_char * (length - 2) + border_char)
     return
@@ -93,7 +95,7 @@ def in_town(variables, farm_data, seed_data):
         print("Welcome to Pierce's Seed Shop!")
         in_shop(variables, farm_data, seed_data)
     elif choice == "2":
-        variables["position"] = [2, 2]
+        variables["position"] = [2, 2]  #Resets player position to the house when entering from the town.
         in_farm(variables, farm_data, seed_data)
     elif choice == "3":
         end_day(variables, farm_data, seed_data)
@@ -105,7 +107,6 @@ def in_town(variables, farm_data, seed_data):
         throw_error()
         in_town(variables, farm_data, seed_data)
 #endregion
-
 
 #region Shop Menu
 def buy_seeds(variables, seed_info):
@@ -401,7 +402,7 @@ def end_day(variables, farm_data, seed_data):
     for row in farm_data:
         y = 0
         for column in row:
-            y += 1
+            y += 1      #Incremented here because of the many splits in the code.
             if column == None:
                 continue
             for seed_name, remaining_growth_time in column.items():  
@@ -409,10 +410,10 @@ def end_day(variables, farm_data, seed_data):
                     continue        
                 if remaining_growth_time > 0:
                     print(x, y)
-                    farm_data[x][y - 1] = {seed_name: remaining_growth_time - 1}
+                    farm_data[x][y - 1] = {seed_name: remaining_growth_time - 1}    #1 is subtracted to account for 
+                                                                                    #incrementing early before the loop iterates.
         x += 1
     in_town(variables, farm_data, seed_data)
-
 
 #region Save and Load functions
 def save_game(variables, farm_data):
@@ -441,7 +442,7 @@ def reformat_seed_bag(seed_bag):
             quantity = int(element[1])
             bag[name] = quantity
     except:
-        return None
+        return {}
     
     return bag
 
@@ -522,15 +523,14 @@ def main(variables, farm_data, seed_data):
         in_town(variables, farm_data, seed_data)
     elif choice == "2":
         decision = load_save_data(variables, farm_data)
-        if decision == None:
+        if decision == None:    #If None is returned, it means the save file is empty or corrupt.
             main(variables, farm_data, seed_data)
             
-        farm_data = decision
+        farm_data = decision    #I don't know why, but reassigning farm_data in the load function doesn't work. It works here, though. ???
         in_town(variables, farm_data, seed_data)
     else:
         throw_error()
         main(variables, farm_data, seed_data)
 #endregion
-
 
 main(player_variables, farm_layout, seed_list)
