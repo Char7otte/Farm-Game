@@ -90,6 +90,7 @@ def in_town(variables, farm_data, seed_data):
         print("Welcome to Pierce's Seed Shop!")
         in_shop(variables, farm_data, seed_data)
     elif choice == "2":
+        variables["position"] = [2, 2]
         in_farm(variables, farm_data, seed_data)
     elif choice == "3":
         end_day(variables, farm_data, seed_data)
@@ -235,8 +236,13 @@ def print_farm_menu(variables, farm_data):
     print("[WASD] Move")
     player_row = variables["position"][0]
     player_column = variables["position"][1]
-    if farm_data[player_row][player_column] == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
+    current_tile = farm_data[player_row][player_column]
+    if current_tile == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
         print("P)lant seed")
+    elif current_tile != None:
+        for seed_name, remaining_growth_time in current_tile.items():
+            if remaining_growth_time == 0:
+                print("H)arvest")
     print("R)eturn to Town")
 
 
@@ -316,12 +322,13 @@ def plant_seed(variables, farm_data, seed_data):
 def in_farm(variables, farm_data, seed_data):
     print_farm_menu(variables, farm_data)
     choice = try_choice().upper()
+    current_tile = farm_data[variables["position"][0]][variables["position"][1]]
 
     if choice == "W" or choice == "S" or choice =="A" or choice == "D":
         move_player(variables, farm_data, seed_data, choice)
         in_farm(variables, farm_data, seed_data)
     elif choice == "P":
-        if not farm_data[variables["position"][0]][variables["position"][1]] == None:
+        if not current_tile == None:
             input("You can't plant seeds here.")
             in_farm(variables, farm_data, seed_data)
         else:
@@ -332,13 +339,35 @@ def in_farm(variables, farm_data, seed_data):
                 if use_energy(variables) == False:
                     in_farm(variables, farm_data, seed_data)
                 plant_seed(variables, farm_data, seed_data)
+    elif choice == "H":
+        if current_tile == None:
+            input("There is nothing to harvest.")
+            in_farm(variables, farm_data, seed_data)
+        elif "HSE"  in current_tile:
+            input("You can't harvest the house.")
+            in_farm(variables, farm_data, seed_data)
+        else:
+            if use_energy(variables) == False:
+                in_farm(variables, farm_data, seed_data)
+            for seed_name, remaining_growth_time in current_tile.items():
+                if not remaining_growth_time == 0:
+                    input("This crop is not ready to harvest.")
+                    in_farm(variables, farm_data, seed_data)
+                farm_data[variables["position"][0]][variables["position"][1]] = None
+
+                for seed in seed_data:
+                    if seed_data[seed]["id"] == seed_name:
+                        crop_price = seed_data[seed]["crop_price"]
+                        variables["money"] += crop_price
+                        print(f"You harvests the {seed} and sold it for ${crop_price}!")
+                        input(f"You now have ${variables["money"]}!")
+                        in_farm(variables, farm_data, seed_data)
     elif choice == "R":
         in_town(variables, farm_data, seed_data)
     else:
         throw_error()
         in_farm(variables, farm_data, seed_data)
 #endregion
-
 
 def show_stats(variables):
     day = variables["day"]
