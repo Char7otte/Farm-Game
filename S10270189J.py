@@ -357,6 +357,15 @@ def save_game(variables, farm_data):
         for element in farm_data:
             save_file.write(f"{element}\n")
 
+def reformat_position(position):
+    x = 0
+    fixed_position = []
+    for element in position:
+        element = element.replace("[", "").replace("]", "").replace(" ", "")
+        fixed_position.append(int(element))
+        x += 1
+    return fixed_position
+
 def reformat_seed_bag(seed_bag):
     bag = {}
     x = 0
@@ -385,15 +394,14 @@ def load_save_data(variables, farm_data):
         variables["money"] = int(save_file.readline().strip())
 
         position = save_file.readline().strip().split(",")
-        x = 0
-        for element in position:
-            element = element.replace("[", "").replace("]", "").replace(" ", "")
-            variables["position"][x] = int(element)
-            x += 1
+        variables["position"] = reformat_position(position)
 
         seed_bag = save_file.readline().strip().split(",")
         variables["seed_bag"] = reformat_seed_bag(seed_bag)
+
+
         return 1   #Returns something so that decision won't be None
+    
 #endregion
 
 
