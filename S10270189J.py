@@ -386,14 +386,9 @@ def reformat_seed_bag(seed_bag):
     return bag
 
 def load_save_data(variables, farm_data):
-    try: 
-        save_file = open("save_game.txt", "r")
-    except FileNotFoundError:
-        input("No save game found.")
-        return 
-    
-    with open ("save_game.txt", "r") as save_file:
-        try:
+    try:
+        with open ("save_game.txt", "r") as save_file:
+
             variables["day"] = int(save_file.readline().strip())
 
             variables["energy"] = int(save_file.readline().strip())
@@ -409,6 +404,9 @@ def load_save_data(variables, farm_data):
 
 
         return 1   #Returns something so that decision won't be None
+    except FileNotFoundError:
+        input("No save game found.")
+        return 
     
 #endregion
 
