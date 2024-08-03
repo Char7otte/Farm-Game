@@ -347,7 +347,7 @@ def show_stats(variables):
     seed_bag = variables["seed_bag"]
 
     print_border_line(50, "+", "-")
-    print_formatted_line((f"Day {day} Energy: {energy} Money: ${money}"), 50, "|")
+    print_formatted_line((f"Day: {day} Energy: {energy} Money: ${money}"), 50, "|")
 
     #region print seed bag
     if not seed_bag:
