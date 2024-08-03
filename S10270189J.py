@@ -214,6 +214,8 @@ def in_farm(game_vars, farm_data):
         print("R)eturn to Town")
         choice = input("Your choice? ").lower()
 
+        decision = None
+
         match choice:
             case "w":
                 decision = move_player(player_position, [-1, 0])
