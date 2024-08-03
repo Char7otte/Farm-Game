@@ -62,6 +62,9 @@ def print_formatted_line(string, length, border_char):
     return
 #endregion
 
+def exit_game():
+    print("Goodbye!")
+    exit()
 
 #region Town Menu
 def print_in_town_menu(variables):
@@ -85,7 +88,7 @@ def in_town(variables, farm_data, seed_data):
         in_town(variables, farm_data, seed_data)
 
     if choice == "0":
-        exit()
+        exit_game()
     elif choice == "1":
         print("Welcome to Pierce's Seed Shop!")
         in_shop(variables, farm_data, seed_data)
@@ -514,7 +517,7 @@ def main(variables, farm_data, seed_data):
     choice = try_choice()
 
     if choice == "0":
-        exit()
+        exit_game()
     elif choice == "1":
         in_town(variables, farm_data, seed_data)
     elif choice == "2":
