@@ -215,6 +215,7 @@ def draw_farm(farm_data, farm_size, player_position):
         print()
     print("+" + "-----+" * 5)
 
+
 def print_farm_menu(variables, farm_data):
     draw_farm(farm_data, (5,5), variables["position"])
 
@@ -225,6 +226,7 @@ def print_farm_menu(variables, farm_data):
     if farm_data[player_row][player_column] == None and variables["seed_bag"]:   #Checks if the player is on an empty plot and has seeds
         print("P)lant seed")
     print("R)eturn to Town")
+
 
 def move_player(variables, choice):
     if choice == "w":
@@ -243,6 +245,7 @@ def move_player(variables, choice):
         input("You can't go that way.")
     else:
         variables["position"] = [new_player_row, new_player_column]
+
 
 def print_planting_menu(variables, seed_data):
     plant_string_format = "{:15}{:^13}{:^13}{:^13}"
@@ -269,6 +272,7 @@ def print_planting_menu(variables, seed_data):
     print("0) Leave")
     print_border_line(50, "-", "-")
 
+
 def plant_seed(variables, farm_data, seed_data):
     print_planting_menu(variables, seed_data)
     
@@ -293,8 +297,6 @@ def plant_seed(variables, farm_data, seed_data):
     farm_data[player_row][player_column] = [plant_id, plant_remaining_growth_time]    
     variables["seed_bag"][selected_seed] -= 1
     in_farm(variables, farm_data, seed_data)
-    
-
 
 
 def in_farm(variables, farm_data, seed_data):
@@ -344,7 +346,6 @@ def show_stats(variables):
 
 def end_day(variables):
     pass
-
 
 
 #region Save and Load functions
