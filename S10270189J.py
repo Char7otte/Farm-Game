@@ -90,6 +90,7 @@ def in_town(variables, farm_data, seed_data):
         print("Welcome to Pierce's Seed Shop!")
         in_shop(variables, farm_data, seed_data)
     elif choice == "2":
+        variables["position"] = [2, 2]
         in_farm(variables, farm_data, seed_data)
     elif choice == "3":
         end_day(variables, farm_data, seed_data)
