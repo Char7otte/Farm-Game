@@ -368,11 +368,14 @@ def reformat_seed_bag(seed_bag):
     x = 0
     fixed_seed_bag = seed_bag.replace("{", "").replace("}", "").replace("'", "").replace(" ", "").split(",")
 
-    for element in fixed_seed_bag:
-        element = element.split(":")
-        name = element[0]
-        quantity = int(element[1])
-        bag[name] = quantity
+    try:
+        for element in fixed_seed_bag:
+            element = element.split(":")
+            name = element[0]
+            quantity = int(element[1])
+            bag[name] = quantity
+    except:
+        return None
     
     return bag
 
