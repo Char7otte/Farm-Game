@@ -110,15 +110,15 @@ def in_town(variables, farm_data, seed_data):
 
 #region Shop Menu
 def buy_seeds(variables, seed_info):
-    player_money = variables["money"]
+    money = variables["money"]
     seed_name = seed_info["name"]
     seed_price = seed_info["price"]
 
-    print(f"You have ${player_money}")
+    print(f"You have ${money}")
     buy_quantity = int(input("How many do you wish to buy? "))
     total_cost = seed_price * buy_quantity
 
-    if player_money >= total_cost:
+    if money >= total_cost:
         print(f"You bought {buy_quantity} {seed_name} seeds.")
         variables["money"] -= total_cost
         if seed_name in variables["seed_bag"]:
