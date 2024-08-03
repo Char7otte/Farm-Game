@@ -387,15 +387,19 @@ def load_save_data(variables, farm_data):
         return 
     
     with open ("save_game.txt", "r") as save_file:
-        variables["day"] = int(save_file.readline().strip())
+        try:
+            variables["day"] = int(save_file.readline().strip())
 
-        variables["energy"] = int(save_file.readline().strip())
+            variables["energy"] = int(save_file.readline().strip())
 
-        variables["money"] = int(save_file.readline().strip())
+            variables["money"] = int(save_file.readline().strip())
 
-        variables["position"] = reformat_position(save_file.readline().strip())
+            variables["position"] = reformat_position(save_file.readline().strip())
 
-        variables["seed_bag"] = reformat_seed_bag(save_file.readline().strip())
+            variables["seed_bag"] = reformat_seed_bag(save_file.readline().strip())
+        except:
+            input("Save file corrupted.")
+            return None
 
 
         return 1   #Returns something so that decision won't be None
