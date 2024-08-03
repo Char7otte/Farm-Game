@@ -235,13 +235,13 @@ def print_farm_menu(variables, farm_data):
 
 
 def move_player(variables, choice):
-    if choice == "w":
+    if choice == "W":
         movement = (-1, 0)
-    elif choice == "s":
+    elif choice == "S":
         movement = (1, 0)
-    elif choice == "a":
+    elif choice == "A":
         movement = (0, -1)
-    elif choice == "d":
+    elif choice == "D":
         movement = (0, 1)
 
     player_row, player_column = variables["position"][0], variables["position"][1]
@@ -307,12 +307,12 @@ def plant_seed(variables, farm_data, seed_data):
 
 def in_farm(variables, farm_data, seed_data):
     print_farm_menu(variables, farm_data)
-    choice = try_choice().lower()
+    choice = try_choice().upper()
 
-    if choice == "w" or choice == "s" or choice =="a" or choice == "d":
-        move_player(variables, choice)
+    if choice == "W" or choice == "S" or choice =="A" or choice == "D":
+        move_player(variables, farm_data, seed_data, choice)
         in_farm(variables, farm_data, seed_data)
-    elif choice == "p":
+    elif choice == "P":
         if not farm_data[variables["position"][0]][variables["position"][1]] == None:
             input("You can't plant seeds here.")
             in_farm(variables, farm_data, seed_data)
@@ -322,7 +322,7 @@ def in_farm(variables, farm_data, seed_data):
                 in_farm(variables, farm_data, seed_data)
             else:
                 plant_seed(variables, farm_data, seed_data)
-    elif choice == "r":
+    elif choice == "R":
         in_town(variables, farm_data, seed_data)
     else:
         throw_error()
